@@ -40,17 +40,17 @@ var opts = require('optimist')
     }).boolean('allow_discovery').argv;
 
 var runhttps = false;
-var sshport = 22;
-var sshhost = 'localhost';
-var sshauth = 'password,keyboard-interactive';
+var globalsshport = 22;
+var globalsshhost = 'localhost';
+var globalsshauth = 'password,keyboard-interactive';
 var globalsshuser = '';
 
 if (opts.sshport) {
-    sshport = opts.sshport;
+    globalsshport = opts.sshport;
 }
 
 if (opts.sshhost) {
-    sshhost = opts.sshhost;
+    globalsshhost = opts.sshhost;
 }
 
 if (opts.sshauth) {
@@ -75,7 +75,7 @@ process.on('uncaughtException', function(e) {
 var httpserv;
 
 var app = express();
-app.get('/wetty/ssh/:user', function(req, res) {
+app.get('/wetty/ssh/:user/[\\dA-Fa-f.:]+(?:/|/\\d{1,5})?$', function(req, res) {
     res.sendfile(__dirname + '/public/wetty/index.html');
 });
 app.use('/', express.static(path.join(__dirname, 'public')));
@@ -92,15 +92,24 @@ if (runhttps) {
 
 var io = server(httpserv,{path: '/wetty/socket.io'});
 io.on('connection', function(socket){
-    var sshuser = '';
+    var sshuser = '',
+        sshport = globalsshport,
+        sshhost = globalsshhost,
+        sshauth = globalsshauth;
     var request = socket.request;
     console.log((new Date()) + ' Connection accepted.');
-    if (match = request.headers.referer.match('/wetty/ssh/.+$')) {
-        sshuser = match[0].replace('/wetty/ssh/', '') + '@';
+    if (match = request.headers.referer.match(
+            '/wetty/ssh/([\\x30-\\x39\\x41-\\x5A\\x61-\\x7A]+)\/'+
+            '([\\dA-Fa-f.:]+)(?:/|/(\\d{1,5}))?$',
+        )
+    ) {
+        sshuser = match[1] + '@';
+        sshhost = match[2];
+        match[3] ? sshport = match[3] : '';
     } else if (globalsshuser) {
         sshuser = globalsshuser + '@';
     }
-
+    console.log('Resulting credentials', sshuser, sshhost, sshport);
     var term;
     if (process.getuid() == 0) {
         term = pty.spawn('/usr/bin/env', ['login'], {
