@@ -1,6 +1,9 @@
 {
     "name": "wetty",
     "version": "0.2.0",
+    "scripts": {
+        "devstart": "./node_modules/.bin/nodemon app.js -p 3000"
+    },
     "dependencies": {
         "express": "3.5.1",
         "socket.io": "^1.3.7",
@@ -8,12 +11,13 @@
         "optimist": "^0.6"
     },
     "devDependencies": {
-        "load-grunt-tasks": "^3.0",
         "grunt": "^0.4",
-        "grunt-shell": "^1.1",
-        "grunt-mkdir": "^0.1",
+        "grunt-contrib-clean": "^0.6",
         "grunt-git": "^0.3",
-        "grunt-contrib-clean": "^0.6"
+        "grunt-mkdir": "^0.1",
+        "grunt-shell": "^1.1",
+        "load-grunt-tasks": "^3.0",
+        "nodemon": "^1.15.0"
     },
     "description": "Wetty = Web + tty. Terminal access in browser over http/https ",
     "main": "app.js",

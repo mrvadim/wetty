@@ -54,7 +54,7 @@ if (opts.sshhost) {
 }
 
 if (opts.sshauth) {
-	sshauth = opts.sshauth
+	globalsshauth = opts.sshauth;
 }
 
 if (opts.sshuser) {
@@ -75,7 +75,8 @@ process.on('uncaughtException', function(e) {
 var httpserv;
 
 var app = express();
-app.get('/wetty/ssh/:user/[\\dA-Fa-f.:]+(?:/|/\\d{1,5})?$', function(req, res) {
+// /wetty/ssh/:user/[\\dA-Fa-f.:]+(?:/|/\\d{1,5})?$
+app.get('/wetty/ssh', function(req, res) {
     res.sendfile(__dirname + '/public/wetty/index.html');
 });
 app.use('/', express.static(path.join(__dirname, 'public')));
@@ -92,24 +93,28 @@ if (runhttps) {
 
 var io = server(httpserv,{path: '/wetty/socket.io'});
 io.on('connection', function(socket){
-    var sshuser = '',
-        sshport = globalsshport,
-        sshhost = globalsshhost,
-        sshauth = globalsshauth;
-    var request = socket.request;
+    const request = socket.request;
+    let credentials = {};
+
     console.log((new Date()) + ' Connection accepted.');
-    if (match = request.headers.referer.match(
-            '/wetty/ssh/([\\x30-\\x39\\x41-\\x5A\\x61-\\x7A]+)\/'+
-            '([\\dA-Fa-f.:]+)(?:/|/(\\d{1,5}))?$',
-        )
-    ) {
-        sshuser = match[1] + '@';
-        sshhost = match[2];
-        match[3] ? sshport = match[3] : '';
-    } else if (globalsshuser) {
-        sshuser = globalsshuser + '@';
+    
+    if (match = request.headers.referer.match(/\/wetty\/ssh\?(.*)#?/)) {
+        credentials = match[1].split('&').reduce((acc, cur) => {
+            const entry = cur.split('=');
+
+            return Object.assign(acc, { [entry[0].toLowerCase()]: entry[1] });
+        }, {});
     }
-    console.log('Resulting credentials', sshuser, sshhost, sshport);
+
+    let sshuser = credentials['sshuser'] || globalsshuser;
+    const sshhost = credentials['sshhost'] || globalsshhost;
+    const sshport = credentials['sshport'] || globalsshport;
+    const sshauth = globalsshauth;
+
+    if (sshuser) {
+        sshuser += '@';
+    }
+
     var term;
     if (process.getuid() == 0) {
         term = pty.spawn('/usr/bin/env', ['login'], {
