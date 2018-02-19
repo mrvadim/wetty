@@ -75,7 +75,7 @@ process.on('uncaughtException', function(e) {
 var httpserv;
 
 var app = express();
-// /wetty/ssh/:user/[\\dA-Fa-f.:]+(?:/|/\\d{1,5})?$
+
 app.get('/wetty/ssh', function(req, res) {
     res.sendfile(__dirname + '/public/wetty/index.html');
 });
@@ -97,7 +97,7 @@ io.on('connection', function(socket){
     let credentials = {};
 
     console.log((new Date()) + ' Connection accepted.');
-    
+
     if (match = request.headers.referer.match(/\/wetty\/ssh\?(.*)#?/)) {
         credentials = match[1].split('&').reduce((acc, cur) => {
             const entry = cur.split('=');
@@ -115,6 +115,13 @@ io.on('connection', function(socket){
         sshuser += '@';
     }
 
+    if (process.env.DEBUG) {
+        console.log(
+            (new Date()) + " REFERER", request.headers.referer,
+            "PARSED INTO CREDENTIALS", sshuser, sshhost, sshport
+        );
+    }
+
     var term;
     if (process.getuid() == 0) {
         term = pty.spawn('/usr/bin/env', ['login'], {
@@ -129,12 +136,12 @@ io.on('connection', function(socket){
             rows: 30
         });
     }
-    console.log((new Date()) + " PID=" + term.pid + " STARTED on behalf of user=" + sshuser)
+    console.log((new Date()) + " PID=" + term.pid + " STARTED on behalf of user=" + sshuser);
     term.on('data', function(data) {
         socket.emit('output', data);
     });
     term.on('exit', function(code) {
-        console.log((new Date()) + " PID=" + term.pid + " ENDED")
+        console.log((new Date()) + " PID=" + term.pid + " ENDED");
     });
     socket.on('resize', function(data) {
         term.resize(data.col, data.row);
@@ -143,6 +150,7 @@ io.on('connection', function(socket){
         term.write(data);
     });
     socket.on('disconnect', function() {
+        console.log((new Date()) + " PID=" + term.pid + " DISCONNECTED");
         term.end();
     });
 })
