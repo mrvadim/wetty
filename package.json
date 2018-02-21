@@ -1,38 +1,35 @@
 {
-    "name": "wetty",
-    "version": "0.2.0",
-    "scripts": {
-        "devstart": "./node_modules/.bin/nodemon app.js -p 3000"
-    },
-    "dependencies": {
-        "express": "3.5.1",
-        "socket.io": "^1.3.7",
-        "pty.js": "^0.3.0",
-        "optimist": "^0.6"
-    },
-    "devDependencies": {
-        "grunt": "^0.4",
-        "grunt-contrib-clean": "^0.6",
-        "grunt-git": "^0.3",
-        "grunt-mkdir": "^0.1",
-        "grunt-shell": "^1.1",
-        "load-grunt-tasks": "^3.0",
-        "nodemon": "^1.15.0"
-    },
-    "description": "Wetty = Web + tty. Terminal access in browser over http/https ",
-    "main": "app.js",
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/krishnasrinivas/wetty.git"
-    },
-    "author": "Krishna Srinivas <krishna.srinivas@gmail.com> (https://github.com/krishnasrinivas)",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/krishnasrinivas/wetty/issues"
-    },
-    "homepage": "https://github.com/krishnasrinivas/wetty",
-    "preferGlobal": "true",
-    "bin": {
-        "wetty": "./bin/wetty.js"
-    }
+  "name": "wetty_importable",
+  "version": "0.1.0",
+  "scripts": {
+    "devstart": "./node_modules/.bin/nodemon -p \"require('./app').start({ port: 3000 })\""
+  },
+  "dependencies": {
+    "express": "4.16.2",
+    "socket.io": "^1.3.7",
+    "pty.js": "^0.3.0",
+    "optimist": "^0.6"
+  },
+  "devDependencies": {
+    "grunt": "^0.4",
+    "grunt-contrib-clean": "^0.6",
+    "grunt-git": "^0.3",
+    "grunt-mkdir": "^0.1",
+    "grunt-shell": "^1.1",
+    "load-grunt-tasks": "^3.0",
+    "nodemon": "^1.15.0"
+  },
+  "description": "Wetty = Web + tty. Terminal access in browser over http/https. This is a fork from initial Wetty server git://github.com/krishnasrinivas/wetty.git that provides importable functions used to run Wetty server from another node package. It also may be used to connect to several different host:port pairs on behalf of different users.",
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/krishnasrinivas/wetty.git"
+  },
+  "author": "Alexander Myznikov <post@edev-service.ru> (https://github.com/alex-edev)",
+  "license": "MIT",
+  "homepage": "https://github.com/krishnasrinivas/wetty",
+  "preferGlobal": false,
+  "bin": {
+    "wetty": "./bin/wetty.js"
+  }
 }
