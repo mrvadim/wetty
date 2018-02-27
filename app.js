@@ -99,7 +99,7 @@ exports.start = function(opts) {
       sshport,
       '-o',
       'PreferredAuthentications=' + sshauth
-    ], { name: 'xterm-256color', cols: 80, rows: 30, uid: 0, gid: 0 });
+    ], { name: 'xterm-256color', cols: 80, rows: 30 });
 
     console.log((new Date()) + " PID=" + term.pid + " STARTED on behalf of user=" + sshuser);
     term.on('data', function(data) {
