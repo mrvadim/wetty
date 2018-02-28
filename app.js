@@ -93,7 +93,8 @@ exports.start = function(opts) {
       );
     }
 
-    const term = pty.spawn('ssh', [
+    const term = pty.spawn('node', [
+      './terminal.js',
       sshuser + sshhost,
       '-p',
       sshport,
