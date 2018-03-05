@@ -94,7 +94,7 @@ exports.start = function(opts) {
     }
 
     const term = pty.spawn('node', [
-      './terminal.js',
+      __dirname + '/terminal.js',
       sshuser + sshhost,
       '-p',
       sshport,
