@@ -5,6 +5,7 @@ const path = require('path');
 const server = require('socket.io');
 const pty = require('pty.js');
 const fs = require('fs');
+const os = require('os');
 const crypto = require('crypto');
 
 let httpserv;
