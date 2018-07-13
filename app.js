@@ -5,6 +5,7 @@ const path = require('path');
 const server = require('socket.io');
 const pty = require('pty.js');
 const fs = require('fs');
+const crypto = require('crypto');
 
 let httpserv;
 
@@ -93,8 +94,18 @@ exports.start = function(opts) {
       );
     }
 
+    let termPath = __dirname + '/terminal.js';
+
+    if (termPath.match(/^\/snapshot\//)) {
+      // Handle case for binary build with pkg: copy terminal.js from inside binary package to
+      // temporary directory and use it from there.
+      const fileData = fs.readFileSync(termPath);
+      termPath = path.join(os.tmpdir(), `${crypto.randomFillSync(Buffer.alloc(10)).toString('hex')}.js`);
+      fs.writeFileSync(termPath, fileData);
+    }
+
     const term = pty.spawn('node', [
-      __dirname + '/terminal.js',
+      termPath,
       sshuser + sshhost,
       '-p',
       sshport,
