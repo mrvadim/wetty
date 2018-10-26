@@ -1,6 +1,6 @@
 {
   "name": "wetty_importable",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "scripts": {
     "devstart": "./node_modules/.bin/nodemon -p \"require('./app').start({ port: 3000 })\""
   },
