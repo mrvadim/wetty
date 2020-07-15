@@ -11,7 +11,7 @@ const localhost = (host: string): boolean =>
 
 const urlArgs = (
   referer: string,
-  def: { [s: string]: string }
+  def: { [s: string]: string | undefined }
 ): { [s: string]: string } =>
   Object.assign(def, url.parse(referer, true).query);
 

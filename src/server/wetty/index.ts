@@ -24,7 +24,7 @@ export default function startWeTTy(
   command = '',
   forcessh = false,
   ssl?: SSL
-): Promise<void> {
+): Promise<SocketIO.Server> {
   return loadSSL(ssl).then((sslBuffer: SSLBuffer) => {
     if (ssh.key) {
       logger.warn(`!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -34,7 +34,7 @@ export default function startWeTTy(
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!`);
     }
 
-    const io = server(serverConf, sslBuffer);
+    const io: SocketIO.Server = server(serverConf, sslBuffer);
     /**
      * Wetty server connected too
      * @fires WeTTy#connnection
@@ -68,5 +68,7 @@ export default function startWeTTy(
           });
       }
     });
+
+    return io;
   });
 }
