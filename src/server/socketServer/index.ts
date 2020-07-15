@@ -53,7 +53,7 @@ export default function createServer(
   }
 
   const client = html(base, title);
-  app.get(basePath, client).get(`${basePath}/ssh/:user`, client);
+  app.get(basePath, client).get(`${basePath}/ssh/:user?`, client);
 
   return socket(
     !isUndefined(key) && !isUndefined(cert)

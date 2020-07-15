@@ -1,6 +1,6 @@
 import * as io from 'socket.io-client';
 
-const userRegex = new RegExp('ssh/[^/]+$');
+const userRegex = /ssh$|ssh\/[^/]+$/;
 export const trim = (str: string): string => str.replace(/\/*$/, '');
 
 const socketBase = trim(window.location.pathname).replace(userRegex, '');
