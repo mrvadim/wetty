@@ -7,11 +7,11 @@ const logger = createLogger({
     colorize({ all: process.env.NODE_ENV === 'development' }),
     label({ label: 'Wetty' }),
     timestamp(),
-    process.env.NODE_ENV === 'development' ? simple() : json()
+    simple()
   ),
   transports: [
     new transports.Console({
-      level: process.env.NODE_ENV === 'development' ? 'debug' : 'info',
+      level: process.env.NODE_ENV === 'development' ? 'debug' : 'warn',
       handleExceptions: true,
     }),
   ],
