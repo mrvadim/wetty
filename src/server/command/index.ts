@@ -27,24 +27,31 @@ export default (
   { user, host, port, auth, pass, key, knownhosts }: SSH,
   command: string,
   forcessh: boolean
-): { args: string[]; user: boolean } => ({
-  args: !forcessh && localhost(host)
-    ? loginOptions(command, remoteAddress)
-    : sshOptions(
-        { ...urlArgs(referer, {
-            port: `${port}`,
-            pass: pass || '',
-            command,
-            auth,
-            knownhosts,
-          }),
-          host: address(referer, user, host)
-        },
-        key
-      ),
-  user:
-    (!forcessh && localhost(host)) ||
-    user !== '' ||
-    user.includes('@') ||
-    address(referer, user, host).includes('@'),
-});
+): { args: string[]; user: boolean } => {
+  const extendedArgs = urlArgs(referer, {
+    port: `${port}`,
+    pass: pass || '',
+    command,
+    auth,
+    knownhosts,
+  });
+
+  const hostAddress = address(referer, user, extendedArgs.host || host);
+
+  return {
+    args: !forcessh && localhost(host)
+      ? loginOptions(command, remoteAddress)
+      : sshOptions(
+          { 
+            ...extendedArgs,
+            host: hostAddress
+          },
+          key
+        ),
+    user:
+      (!forcessh && localhost(host)) ||
+      user !== '' ||
+      user.includes('@') ||
+      hostAddress.includes('@'),
+  }
+};

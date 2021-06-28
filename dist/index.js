@@ -150,7 +150,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _address__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./address */ "./src/server/command/address.ts");
 /* harmony import */ var _login__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./login */ "./src/server/command/login.ts");
 /* harmony import */ var _ssh__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ssh */ "./src/server/command/ssh.ts");
-const localhost=host=>process.getuid()===0&&(host==='localhost'||host==='0.0.0.0'||host==='127.0.0.1');const urlArgs=(referer,def)=>Object.assign(def,url__WEBPACK_IMPORTED_MODULE_0__["parse"](referer,true).query);/* harmony default export */ __webpack_exports__["default"] = (({request:{headers:{referer}},client:{conn:{remoteAddress}}},{user,host,port,auth,pass,key,knownhosts},command,forcessh)=>({args:!forcessh&&localhost(host)?Object(_login__WEBPACK_IMPORTED_MODULE_2__["default"])(command,remoteAddress):Object(_ssh__WEBPACK_IMPORTED_MODULE_3__["default"])({...urlArgs(referer,{port:`${port}`,pass:pass||'',command,auth,knownhosts}),host:Object(_address__WEBPACK_IMPORTED_MODULE_1__["default"])(referer,user,host)},key),user:!forcessh&&localhost(host)||user!==''||user.includes('@')||Object(_address__WEBPACK_IMPORTED_MODULE_1__["default"])(referer,user,host).includes('@')}));
+const localhost=host=>process.getuid()===0&&(host==='localhost'||host==='0.0.0.0'||host==='127.0.0.1');const urlArgs=(referer,def)=>Object.assign(def,url__WEBPACK_IMPORTED_MODULE_0__["parse"](referer,true).query);/* harmony default export */ __webpack_exports__["default"] = (({request:{headers:{referer}},client:{conn:{remoteAddress}}},{user,host,port,auth,pass,key,knownhosts},command,forcessh)=>{const extendedArgs=urlArgs(referer,{port:`${port}`,pass:pass||'',command,auth,knownhosts});const hostAddress=Object(_address__WEBPACK_IMPORTED_MODULE_1__["default"])(referer,user,extendedArgs.host||host);return{args:!forcessh&&localhost(host)?Object(_login__WEBPACK_IMPORTED_MODULE_2__["default"])(command,remoteAddress):Object(_ssh__WEBPACK_IMPORTED_MODULE_3__["default"])({...extendedArgs,host:hostAddress},key),user:!forcessh&&localhost(host)||user!==''||user.includes('@')||hostAddress.includes('@')};});
 
 /***/ }),
 
@@ -326,7 +326,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var winston__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! winston */ "winston");
 /* harmony import */ var winston__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(winston__WEBPACK_IMPORTED_MODULE_0__);
-const{combine,timestamp,label,simple,json,colorize}=winston__WEBPACK_IMPORTED_MODULE_0__["format"];const logger=Object(winston__WEBPACK_IMPORTED_MODULE_0__["createLogger"])({format:combine(colorize({all:"development"==='development'}),label({label:'Wetty'}),timestamp(),simple()),transports:[new winston__WEBPACK_IMPORTED_MODULE_0__["transports"].Console({level: true?'debug':undefined,handleExceptions:true})]});/* harmony default export */ __webpack_exports__["default"] = (logger);
+const{combine,timestamp,label,simple,colorize}=winston__WEBPACK_IMPORTED_MODULE_0__["format"];const logger=Object(winston__WEBPACK_IMPORTED_MODULE_0__["createLogger"])({format:combine(colorize({all:"development"==='development'}),label({label:'Wetty'}),timestamp(),simple()),transports:[new winston__WEBPACK_IMPORTED_MODULE_0__["transports"].Console({level: true?'debug':undefined,handleExceptions:true})]});/* harmony default export */ __webpack_exports__["default"] = (logger);
 
 /***/ }),
 
@@ -415,15 +415,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "login", function() { return login; });
 /* harmony import */ var node_pty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! node-pty */ "node-pty");
 /* harmony import */ var node_pty__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(node_pty__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _xterm__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./xterm */ "./src/server/wetty/term/xterm.ts");
-/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! path */ "path");
-/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(path__WEBPACK_IMPORTED_MODULE_2__);
-const fs=__webpack_require__(/*! fs */ "fs");const os=__webpack_require__(/*! os */ "os");const crypto=__webpack_require__(/*! crypto */ "crypto");function login(socket){// Check request-header for username
-const remoteUser=socket.request.headers['remote-user'];if(remoteUser){return new Promise(resolve=>{resolve(remoteUser);});}let termPath=Object(path__WEBPACK_IMPORTED_MODULE_2__["join"])(__dirname,'buffer.js');if(termPath.match(/^\/snapshot\//)){// Handle case for binary build with pkg: copy terminal.js from inside binary package to
+/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! path */ "path");
+/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(path__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! fs */ "fs");
+/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(fs__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var os__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! os */ "os");
+/* harmony import */ var os__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(os__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var crypto__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! crypto */ "crypto");
+/* harmony import */ var crypto__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(crypto__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _xterm__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./xterm */ "./src/server/wetty/term/xterm.ts");
+function login(socket){// Check request-header for username
+const remoteUser=socket.request.headers['remote-user'];if(remoteUser){return new Promise(resolve=>{resolve(remoteUser);});}let termPath=Object(path__WEBPACK_IMPORTED_MODULE_1__["join"])(__dirname,'buffer.js');if(termPath.match(/^\/snapshot\//)){// Handle case for binary build with pkg: copy terminal.js from inside binary package to
 // temporary directory and use it from there.
-const fileData=fs.readFileSync(termPath);termPath=Object(path__WEBPACK_IMPORTED_MODULE_2__["join"])(os.tmpdir(),`${crypto.randomFillSync(Buffer.alloc(10)).toString('hex')}.js`);fs.writeFileSync(termPath,fileData);}// Request carries no username information
+const fileData=fs__WEBPACK_IMPORTED_MODULE_2__["readFileSync"](termPath);termPath=Object(path__WEBPACK_IMPORTED_MODULE_1__["join"])(os__WEBPACK_IMPORTED_MODULE_3__["tmpdir"](),`${crypto__WEBPACK_IMPORTED_MODULE_4__["randomFillSync"](Buffer.alloc(10)).toString('hex')}.js`);fs__WEBPACK_IMPORTED_MODULE_2__["writeFileSync"](termPath,fileData);}// Request carries no username information
 // Create terminal and ask user for username
-const term=Object(node_pty__WEBPACK_IMPORTED_MODULE_0__["spawn"])('/usr/bin/env',['node',termPath],_xterm__WEBPACK_IMPORTED_MODULE_1__["xterm"]);let buf='';return new Promise((resolve,reject)=>{term.on('exit',()=>{resolve(buf);});term.on('data',data=>{socket.emit('data',data);});socket.on('input',input=>{term.write(input);buf=/\177/.exec(input)?buf.slice(0,-1):buf+input;}).on('disconnect',()=>{term.kill();reject();});});}
+const term=Object(node_pty__WEBPACK_IMPORTED_MODULE_0__["spawn"])('/usr/bin/env',['node',termPath],_xterm__WEBPACK_IMPORTED_MODULE_5__["xterm"]);let buf='';return new Promise((resolve,reject)=>{term.on('exit',()=>{resolve(buf);});term.on('data',data=>{socket.emit('data',data);});socket.on('input',input=>{term.write(input);buf=/\177/.exec(input)?buf.slice(0,-1):buf+input;}).on('disconnect',()=>{term.kill();reject();});});}
 
 /***/ }),
 
