@@ -1,6 +1,6 @@
 {
   "name": "wetty",
-  "version": "1.3.2",
+  "version": "1.4.1",
   "description": "WeTTY = Web + TTY. Terminal access in browser over http/https",
   "homepage": "https://github.com/butlerx/wetty",
   "repository": {
@@ -23,7 +23,7 @@
     "dev": "NODE_ENV=development concurrently --kill-others --success first \"babel-node node_modules/.bin/webpack --watch\" \"nodemon .\"",
     "lint": "eslint --ext .ts,.js .",
     "prepublishOnly": "NODE_ENV=production yarn build",
-    "start": "node .",
+    "start": "NODE_ENV=production node .",
     "test": "mocha -r babel-register-ts src/**/*.spec.ts"
   },
   "husky": {
@@ -71,7 +71,8 @@
     "source-map-loader": "^0.2.4",
     "toastify-js": "^1.6.1",
     "winston": "^3.2.1",
-    "xterm": "^3.14.5",
+    "xterm": "^4.8.1",
+    "xterm-addon-fit": "^0.4.0",
     "yargs": "^14.0.0"
   },
   "devDependencies": {
