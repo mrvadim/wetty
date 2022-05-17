@@ -1,13 +1,24 @@
+#!/usr/bin/env node
+
 /**
  * Create WeTTY server
  * @module WeTTy
+ *
+ * This is the cli Interface for wetty.
  */
 import yargs from 'yargs';
+import { createRequire } from 'module';
 import { logger } from './shared/logger.js';
 import { start } from './server.js';
 import { loadConfigFile, mergeCliConf } from './shared/config.js';
 
+/* eslint-disable @typescript-eslint/no-var-requires */
+const require = createRequire(import.meta.url);
+const packageJson = require('../package.json');
+
 const opts = yargs
+  .scriptName(packageJson.name)
+  .version(packageJson.version)
   .options('conf', {
     type: 'string',
     description: 'config file to load config from',
@@ -51,6 +62,11 @@ const opts = yargs
       'path to an optional client private key (connection will be password-less and insecure!)',
     type: 'string',
   })
+  .option('ssh-config', {
+    description:
+      'Specifies an alternative ssh configuration file. For further details see "-F" option in ssh(1)',
+    type: 'string',
+  })
   .option('force-ssh', {
     description: 'Connecting through ssh even if running as root',
     type: 'boolean',
@@ -80,7 +96,12 @@ const opts = yargs
   })
   .option('allow-iframe', {
     description:
-      'Allow wetty to be embedded in an iframe, defaults to allowing same origin',
+      'Allow WeTTY to be embedded in an iframe, defaults to allowing same origin',
+    type: 'boolean',
+  })
+  .option('allow-remote-hosts', {
+    description:
+      'Allow WeTTY to use the `host` param in a url as ssh destination',
     type: 'boolean',
   })
   .option('help', {

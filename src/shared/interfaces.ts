@@ -5,8 +5,10 @@ export interface SSH {
   auth: string;
   port: number;
   knownHosts: string;
+  allowRemoteHosts: boolean;
   pass?: string;
   key?: string;
+  config?: string;
 }
 
 export interface SSL {

@@ -1,4 +1,4 @@
-## WeTTy
+## WeTTY
 
 Create WeTTY server
 
@@ -12,7 +12,7 @@ Create WeTTY server
 
 ### WeTTy.start ⇒ `Promise`
 
-Starts WeTTy Server
+Starts WeTTY Server
 
 **Kind**: inner property of [`WeTTy`](#module_WeTTy)  
 **Returns**: `Promise` - Promise resolves once server is running
@@ -26,11 +26,12 @@ Starts WeTTy Server
 | [ssh.port]                | `number`  | `22`          | port to connect to over ssh                                                                                            |
 | [ssh.pass]                | `string`  |               | Optional param of a password to use for ssh                                                                            |
 | [ssh.key]                 | `string`  |               | path to an optional client private key (connection will be password-less and insecure!)                                |
+| [ssh.config]              | `string`  |               | Specifies an alternative ssh configuration file. For further details see "-F" option in ssh(1)                         |
 | [serverConf]              | `Object`  |               | Server settings                                                                                                        |
 | [serverConf.base]         | `Object`  | `'/wetty/'`   | Server settings                                                                                                        |
 | [serverConf.port]         | `number`  | `3000`        | Port to run server on                                                                                                  |
 | [serverConf.host]         | `string`  | `'0.0.0.0'`   | Host address for server                                                                                                |
-| [serverConf.title]        | `string`  | `'WeTTy'`     | Title of the server                                                                                                    |
+| [serverConf.title]        | `string`  | `'WeTTY'`     | Title of the server                                                                                                    |
 | [serverConf.bypasshelmet] | `boolean` | `false`       | if helmet should be disabled on the sever                                                                              |
 | [command]                 | `string`  | `"''"`        | The command to execute. If running as root and no host specified this will be login if a host is specified will be ssh |
 | [forcessh]                | `boolean` | `false`       | Connecting through ssh even if running as root                                                                         |

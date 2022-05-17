@@ -19,7 +19,6 @@ export function login(socket: SocketIO.Socket): Promise<string> {
     });
   }
 
-
   // Request carries no username information
   // Create terminal and ask user for username
   const term = pty.spawn('/usr/bin/env', ['node', executable], xterm);

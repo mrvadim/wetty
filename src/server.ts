@@ -15,6 +15,7 @@ import {
   forceSSHDefault,
   defaultCommand,
 } from './shared/defaults.js';
+import { escapeShell } from './server/shared/shell.js';
 
 /**
  * Starts WeTTy Server
@@ -47,26 +48,24 @@ export async function start(
      * @name connection
      */
     logger.info('Connection accepted.');
-    const { args, user: sshUser } = getCommand(socket, ssh, command, forcessh);
+    const [args, sshUser] = getCommand(socket, ssh, command, forcessh);
     logger.debug('Command Generated', {
       user: sshUser,
       cmd: args.join(' '),
     });
 
-    if (sshUser) {
-      spawn(socket, args);
-    } else {
-      try {
+    try {
+      if (!sshUser) {
         const username = await login(socket);
-        args[1] = `${username.trim()}@${args[1]}`;
+        args[1] = `${escapeShell(username.trim())}@${args[1]}`;
         logger.debug('Spawning term', {
           username: username.trim(),
-          cmd: args.join(' ').trim(),
+          cmd: args.join(' '),
         });
-        spawn(socket, args);
-      } catch (error) {
-        logger.info('Disconnect signal sent', { err: error });
       }
+      await spawn(socket, args);
+    } catch (error) {
+      logger.info('Disconnect signal sent', { err: error });
     }
   });
   return io;

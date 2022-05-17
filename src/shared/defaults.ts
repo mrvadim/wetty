@@ -8,13 +8,15 @@ export const sshDefault: SSH = {
   key: process.env.SSHKEY || undefined,
   port: parseInt(process.env.SSHPORT || '22', 10),
   knownHosts: process.env.KNOWNHOSTS || '/dev/null',
+  allowRemoteHosts: false,
+  config: process.env.SSHCONFIG || undefined,
 };
 
 export const serverDefault: Server = {
   base: process.env.BASE || '/wetty/',
   port: parseInt(process.env.PORT || '3000', 10),
   host: '0.0.0.0',
-  title: process.env.TITLE || 'WeTTy - The Web Terminal Emulator',
+  title: process.env.TITLE || 'WeTTY - The Web Terminal Emulator',
   allowIframe: false,
 };
 

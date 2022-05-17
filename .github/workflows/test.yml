@@ -1,7 +1,7 @@
 ---
-on: [pull_request]
-
 name: Run tests
+on:
+  pull_request:
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
@@ -11,7 +11,7 @@ jobs:
       - name: Setup env
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 14
       - run: yarn
         name: Install dependencies
       - name: ESLint checks

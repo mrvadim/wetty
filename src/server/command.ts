@@ -15,38 +15,46 @@ const urlArgs = (
 ): { [s: string]: string } =>
   Object.assign(def, url.parse(referer, true).query);
 
-export const getCommand = (
+export function getCommand(
   {
-    request: {
-      headers: { referer },
-    },
+    request: { headers },
     client: {
       conn: { remoteAddress },
     },
   }: Socket,
-  { user, host, port, auth, pass, key, knownHosts }: SSH,
+  {
+    user,
+    host,
+    port,
+    auth,
+    pass,
+    key,
+    knownHosts,
+    config,
+    allowRemoteHosts,
+  }: SSH,
   command: string,
   forcessh: boolean,
-): { args: string[]; user: boolean } => ({
-  args:
-    !forcessh && localhost(host)
-      ? loginOptions(command, remoteAddress)
-      : sshOptions(
-          {
-            ...urlArgs(referer, {
-              port: `${port}`,
-              pass: pass || '',
-              command,
-              auth,
-              knownHosts,
-            }),
-            host: address(referer, user, host),
-          },
-          key,
-        ),
-  user:
-    (!forcessh && localhost(host)) ||
-    user !== '' ||
-    user.includes('@') ||
-    address(referer, user, host).includes('@'),
-});
+): [string[], boolean] {
+  const sshAddress = address(headers, user, host);
+  if (!forcessh && localhost(host)) {
+    return [loginOptions(command, remoteAddress), true];
+  }
+  const args = urlArgs(headers.referer, {
+    host: sshAddress,
+    port: `${port}`,
+    pass: pass || '',
+    command,
+    auth,
+    knownHosts,
+    config: config || '',
+  });
+  if (!allowRemoteHosts) {
+    args.host = sshAddress;
+  }
+
+  return [
+    sshOptions(args, key),
+    user !== '' || user.includes('@') || sshAddress.includes('@'),
+  ];
+}
