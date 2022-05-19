@@ -1,6 +1,7 @@
 import type SocketIO from 'socket.io';
 import isUndefined from 'lodash/isUndefined.js';
 import pty from 'node-pty';
+import os from 'os';
 import { logger } from '../shared/logger.js';
 import { xterm } from './shared/xterm.js';
 import { envVersion } from './spawn/env.js';
@@ -9,8 +10,7 @@ export async function spawn(
   socket: SocketIO.Socket,
   args: string[],
 ): Promise<void> {
-  const version = await envVersion();
-  const cmd = version >= 9 ? ['-S', ...args] : args;
+  const cmd = os.platform() === 'darwin' || (await envVersion()) >= 9 ? ['-S', ...args] : args;
   logger.debug('Spawning PTTY', { cmd });
   const term = pty.spawn('/usr/bin/env', cmd, xterm);
   const { pid } = term;

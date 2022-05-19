@@ -30,28 +30,28 @@ export function getCommand(
     pass,
     key,
     knownHosts,
-    config,
-    allowRemoteHosts,
+    config
   }: SSH,
   command: string,
   forcessh: boolean,
 ): [string[], boolean] {
-  const sshAddress = address(headers, user, host);
   if (!forcessh && localhost(host)) {
     return [loginOptions(command, remoteAddress), true];
   }
+
   const args = urlArgs(headers.referer, {
-    host: sshAddress,
-    port: `${port}`,
-    pass: pass || '',
-    command,
-    auth,
-    knownHosts,
-    config: config || '',
+      host,
+      port: `${port}`,
+      pass: pass || '',
+      command,
+      auth,
+      knownHosts,
+      config: config || '',
   });
-  if (!allowRemoteHosts) {
-    args.host = sshAddress;
-  }
+
+  const sshAddress = address(headers, user, args.host);
+
+  args.host = sshAddress;
 
   return [
     sshOptions(args, key),

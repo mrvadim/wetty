@@ -10,7 +10,7 @@ export function address(
   if (remoteUser) {
     return `${escapeShell(remoteUser)}@${host}`;
   }
-  const match = headers.referer.match('.+/ssh/([^/]+)$');
+  const match = headers.referer.match(/.+\/ssh\/([^/]+)$/);
   if (match) {
     const username = escapeShell(match[1].split('?')[0]);
     return `${username}@${host}`;
