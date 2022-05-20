@@ -1,0 +1,22 @@
+export const sshDefault = {
+    user: process.env.SSHUSER || '',
+    host: process.env.SSHHOST || 'localhost',
+    auth: process.env.SSHAUTH || 'password',
+    pass: process.env.SSHPASS || undefined,
+    key: process.env.SSHKEY || undefined,
+    port: parseInt(process.env.SSHPORT || '22', 10),
+    knownHosts: process.env.KNOWNHOSTS || '/dev/null',
+    allowRemoteHosts: false,
+    config: process.env.SSHCONFIG || undefined,
+    telnetPort: parseInt(process.env.TELNETPORT || '23', 10),
+};
+export const serverDefault = {
+    base: process.env.BASE || '/wetty/',
+    port: parseInt(process.env.PORT || '3000', 10),
+    host: '0.0.0.0',
+    title: process.env.TITLE || 'WeTTY - The Web Terminal Emulator',
+    allowIframe: false,
+};
+export const forceSSHDefault = process.env.FORCESSH === 'true' || false;
+export const defaultCommand = process.env.COMMAND || 'login';
+//# sourceMappingURL=defaults.js.map
