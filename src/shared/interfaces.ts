@@ -9,6 +9,7 @@ export interface SSH {
   pass?: string;
   key?: string;
   config?: string;
+  telnetPort: number;
 }
 
 export interface SSL {

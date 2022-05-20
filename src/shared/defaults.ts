@@ -10,6 +10,7 @@ export const sshDefault: SSH = {
   knownHosts: process.env.KNOWNHOSTS || '/dev/null',
   allowRemoteHosts: false,
   config: process.env.SSHCONFIG || undefined,
+  telnetPort: parseInt(process.env.TELNETPORT || '23', 10),
 };
 
 export const serverDefault: Server = {

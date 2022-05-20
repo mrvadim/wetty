@@ -36,7 +36,8 @@ export async function server(
     .use(redirect)
     .use(policies(allowIframe))
     .get(basePath, client)
-    .get(`${basePath}/ssh/:user?`, client);
+    .get(`${basePath}/ssh/:user?`, client)
+    .get(`${basePath}/telnet/:user?`, client);;
 
   const sslBuffer: SSLBuffer = await loadSSL(ssl);
 

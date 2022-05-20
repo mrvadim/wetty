@@ -48,14 +48,14 @@ export async function start(
      * @name connection
      */
     logger.info('Connection accepted.');
-    const [args, sshUser] = getCommand(socket, ssh, command, forcessh);
+    const [args, sshUser, isTelnet] = getCommand(socket, ssh, command, forcessh);
     logger.debug('Command Generated', {
       user: sshUser,
       cmd: args.join(' '),
     });
 
     try {
-      if (!sshUser) {
+      if (!sshUser && !isTelnet) {
         const username = await login(socket);
         args[1] = `${escapeShell(username.trim())}@${args[1]}`;
         logger.debug('Spawning term', {
