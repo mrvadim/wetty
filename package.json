@@ -4,18 +4,16 @@
   "description": "WeTTY = Web + TTY. Terminal access in browser over http/https",
   "homepage": "https://github.com/butlerx/wetty",
   "license": "MIT",
-  "type": "module",
-  "bin": {
-    "wetty": "./build/main.js"
-  },
-  "main": "./build/main.js",
-  "exports": "./build/server.js",
+  "main": "./dist/main.js",
+  "exports": "./dist/server.js",
   "files": [
-    "build/",
+    "dist/",
     "conf/"
   ],
   "scripts": {
-    "build": "snowpack build",
+    "babel": "babel",
+    "gulp": "gulp",
+    "build": "snowpack build; gulp",
     "dev": "NODE_ENV=development concurrently --kill-others --success first \"snowpack dev\" \"nodemon .\"",
     "prepublishOnly": "snowpack build",
     "lint": "eslint src",
@@ -102,9 +100,11 @@
     ]
   },
   "dependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.18.2",
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
     "@snowpack/plugin-run-script": "^2.3.0",
+    "babel-plugin-transform-import-meta": "^2.1.1",
     "compression": "^1.7.4",
     "etag": "^1.8.1",
     "express": "^4.17.1",
@@ -129,6 +129,9 @@
     "yargs": "^15.4.1"
   },
   "devDependencies": {
+    "@babel/cli": "^7.17.10",
+    "@babel/core": "^7.18.2",
+    "@babel/preset-env": "^7.18.2",
     "@types/chai": "^4.2.12",
     "@types/compression": "^1.7.0",
     "@types/etag": "^1.8.0",
@@ -153,6 +156,7 @@
     "all-contributors-cli": "^6.17.2",
     "chai": "^4.2.0",
     "concurrently": "^5.2.0",
+    "del": "^6.1.1",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-prettier": "^8.3.0",
@@ -161,6 +165,9 @@
     "eslint-plugin-mocha": "^8.0.0",
     "eslint-plugin-prettier": "^3.1.4",
     "git-authors-cli": "^1.0.28",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-sourcemaps": "^3.0.0",
     "husky": "^4.2.5",
     "jsdom": "^15.2.1",
     "lint-staged": "^10.2.13",

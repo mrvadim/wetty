@@ -1,8 +1,12 @@
+import fs from 'fs';
+import os from 'os';
+import crypto from 'crypto';
 import type SocketIO from 'socket.io';
-import pty from 'node-pty';
-import { dirname, resolve as resolvePath } from 'path';
+import * as pty from 'node-pty';
+import { join, dirname, resolve as resolvePath } from 'path';
 import { fileURLToPath } from 'url';
 import { xterm } from './shared/xterm.js';
+import { logger } from '../shared/logger.js';
 
 const executable = resolvePath(
   dirname(fileURLToPath(import.meta.url)),
@@ -19,9 +23,28 @@ export function login(socket: SocketIO.Socket): Promise<string> {
     });
   }
 
+  let termPath;
+
+  if (executable.match(/^\/snapshot\//)) {
+    // Handle case for binary build with pkg: copy terminal.js from inside binary package to
+    // temporary directory and use it from there.
+    const fileData = fs.readFileSync(executable);
+    termPath = join(os.tmpdir(), `${crypto.randomFillSync(Buffer.alloc(10)).toString('hex')}.js`);
+    fs.writeFileSync(termPath, fileData);
+  }
+
   // Request carries no username information
   // Create terminal and ask user for username
-  const term = pty.spawn('/usr/bin/env', ['node', executable], xterm);
+  const term = pty.spawn('/usr/bin/env', ['node', termPath || executable], xterm);
+
+  if (termPath) {
+    fs.unlink(termPath, err => {
+      if (err) {
+        logger.warn(err);
+
+      }
+    });
+  }
 
   let buf = '';
   return new Promise((resolve, reject) => {

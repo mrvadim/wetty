@@ -1,6 +1,6 @@
 import type SocketIO from 'socket.io';
 import isUndefined from 'lodash/isUndefined.js';
-import pty from 'node-pty';
+import * as pty from 'node-pty';
 import os from 'os';
 import { logger } from '../shared/logger.js';
 import { xterm } from './shared/xterm.js';
