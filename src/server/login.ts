@@ -23,7 +23,7 @@ export function login(socket: SocketIO.Socket): Promise<string> {
     });
   }
 
-  let termPath;
+  let termPath = '';
 
   if (executable.match(/^\/snapshot\//)) {
     // Handle case for binary build with pkg: copy terminal.js from inside binary package to
@@ -37,18 +37,16 @@ export function login(socket: SocketIO.Socket): Promise<string> {
   // Create terminal and ask user for username
   const term = pty.spawn('/usr/bin/env', ['node', termPath || executable], xterm);
 
-  if (termPath) {
-    fs.unlink(termPath, err => {
-      if (err) {
-        logger.warn(err);
-
-      }
-    });
-  }
-
   let buf = '';
   return new Promise((resolve, reject) => {
     term.on('exit', () => {
+      if (termPath) {
+        fs.unlink(termPath, err => {
+          if (err) {
+            logger.warn(err);
+          }
+        });
+      }
       resolve(buf);
     });
     term.on('data', (data: string) => {
