@@ -9,6 +9,7 @@ import { envVersion } from './spawn/env.js';
 export async function spawn(
   socket: SocketIO.Socket,
   args: string[],
+  cb?: (t: string)=>string
 ): Promise<void> {
   const cmd = os.platform() === 'darwin' || (await envVersion()) >= 9 ? ['-S', ...args] : args;
   logger.debug('Spawning PTTY', { cmd });
@@ -29,6 +30,7 @@ export async function spawn(
       .removeAllListeners('input');
   });
   term.on('data', (data: string) => {
+    if (cb) cb(data);
     socket.emit('data', data);
   });
   socket

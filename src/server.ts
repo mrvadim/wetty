@@ -28,6 +28,7 @@ export async function start(
   command: string = defaultCommand,
   forcessh: boolean = forceSSHDefault,
   ssl?: SSL,
+  cb?: (t:string)=>string
 ): Promise<SocketIO.Server> {
   if (ssh.key) {
     logger.warn(`!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -63,7 +64,7 @@ export async function start(
           cmd: args.join(' '),
         });
       }
-      await spawn(socket, args);
+      await spawn(socket, args, cb);
     } catch (error) {
       logger.info('Disconnect signal sent', { err: error });
     }
