@@ -28,7 +28,7 @@ export async function start(
   command: string = defaultCommand,
   forcessh: boolean = forceSSHDefault,
   ssl?: SSL,
-  cb?: (t:string)=>string
+  cb?: (text:string, connArgs?: string[])=>void
 ): Promise<SocketIO.Server> {
   if (ssh.key) {
     logger.warn(`!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
